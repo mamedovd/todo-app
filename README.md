@@ -16,12 +16,28 @@ Beide Varianten teilen sich dieselbe Datenbasis (`TodoStore` aus `todo.py`).
 python todo_gui.py
 ```
 
-Funktionen im Fenster:
-- Neue Aufgabe über das Eingabefeld hinzufügen (Enter oder Button „Hinzufügen“)
-- Aufgabe auswählen und per Doppelklick oder Button „Erledigt“ als erledigt markieren/zurücksetzen
-- Ausgewählte Aufgabe löschen
-- Alle erledigten Aufgaben auf einmal entfernen
-- Checkbox „Nur offene anzeigen“ zum Filtern der Liste
+Modernes Sidebar-Layout mit drei Ansichten:
+
+- **Aktive Aufgaben**: Aufgabe über das Eingabefeld hinzufügen (Enter oder Button),
+  per Doppelklick oder Button als erledigt/offen markieren, archivieren oder in den
+  Papierkorb verschieben. Checkbox „Nur offene Aufgaben anzeigen“ zum Filtern.
+- **Archiv**: zur Seite gelegte Aufgaben. Können wiederhergestellt (zurück zu Aktiv),
+  in den Papierkorb verschoben oder über „Archiv leeren“ komplett endgültig gelöscht werden.
+- **Papierkorb**: gelöschte Aufgaben. Können wiederhergestellt, einzeln endgültig
+  gelöscht oder über „Papierkorb leeren“ komplett entfernt werden.
+
+Die Sidebar zeigt jeweils die Anzahl der Aufgaben pro Ansicht an.
+
+## Archiv- und Papierkorb-Konzept
+
+- **Aktiv**: normale, laufende Aufgaben.
+- **Archiv**: bewusst zur Seite gelegte Aufgaben (nicht gelöscht, aber aus dem
+  aktiven Blickfeld entfernt).
+- **Papierkorb**: gelöschte Aufgaben, die noch wiederhergestellt werden können,
+  bevor sie endgültig entfernt werden.
+
+Endgültiges Löschen ist immer ein separater, bestätigter Schritt (einzelne Aufgabe
+über „Endgültig löschen“, oder komplett über „Papierkorb leeren“ / „Archiv leeren“).
 
 ## Kommandozeile (CLI)
 
@@ -29,19 +45,34 @@ Funktionen im Fenster:
 # Aufgabe hinzufügen
 python todo.py add "Einkaufen gehen"
 
-# Alle Aufgaben anzeigen
+# Aufgaben anzeigen (Ansicht: active | archived | trash, Standard: active)
 python todo.py list
+python todo.py list --view archived
+python todo.py list --view trash
 
-# Nur offene Aufgaben anzeigen
+# Nur offene Aufgaben anzeigen (nur in --view active)
 python todo.py list --open
 
-# Aufgabe als erledigt markieren (ID aus der Liste)
+# Aufgabe als erledigt / wieder offen markieren
 python todo.py done 1
+python todo.py reopen 1
 
-# Aufgabe löschen
-python todo.py rm 1
+# Archivieren / aus dem Archiv zurückholen
+python todo.py archive 1
+python todo.py unarchive 1
 
-# Alle erledigten Aufgaben entfernen
+# In den Papierkorb verschieben / wiederherstellen
+python todo.py trash 1
+python todo.py restore 1
+
+# Einzelne Aufgabe endgültig löschen
+python todo.py purge 1
+
+# Papierkorb bzw. Archiv komplett endgültig leeren
+python todo.py empty-trash
+python todo.py empty-archive
+
+# Alle erledigten aktiven Aufgaben endgültig löschen
 python todo.py clear
 ```
 
