@@ -307,7 +307,7 @@ class TodoGUI(tk.Tk):
         self.tree = ttk.Treeview(
             list_card, columns=columns, show="headings", selectmode="browse"
         )
-        self.tree.heading("status", text="")
+        self.tree.heading("status", text="☐", command=self._toggle_all, anchor="center")
         self.tree.heading("text", text="AUFGABE")
         self.tree.heading("meta", text="INFO")
         self.tree.column("status", width=40, anchor="center", stretch=False)
@@ -315,7 +315,7 @@ class TodoGUI(tk.Tk):
         self.tree.column("meta", width=170, anchor="e", stretch=False)
         self.tree.tag_configure("done", foreground=COLOR_MUTED)
         self.tree.pack(side="left", fill="both", expand=True, padx=(1, 0), pady=1)
-        self.tree.bind("<Double-Button-1>", lambda _e: self._on_double_click())
+        self.tree.bind("<Button-1>", self._on_tree_click)
 
         scrollbar = ttk.Scrollbar(list_card, orient="vertical", command=self.tree.yview)
         scrollbar.pack(side="right", fill="y")
@@ -381,6 +381,10 @@ class TodoGUI(tk.Tk):
                 "", "end", iid=str(todo.id),
                 values=(status_icon, todo.text, meta), tags=tags,
             )
+
+        # Kopfzeilen-Checkbox: zeigt an, ob bereits alles erledigt ist
+        header_icon = "☑" if todos and all(t.done for t in todos) else "☐"
+        self.tree.heading("status", text=header_icon)
 
         # Sidebar-Zähler aktualisieren
         self.sidebar_items["active"].set_count(
@@ -484,9 +488,34 @@ class TodoGUI(tk.Tk):
             return None
         return todo_id
 
-    def _on_double_click(self) -> None:
-        if self.current_view == "active":
-            self._toggle_done()
+    def _on_tree_click(self, event: tk.Event) -> None:
+        """Einzelklick auf die Checkbox-Spalte markiert die Aufgabe sofort
+        als erledigt/offen, statt dass ein Doppelklick nötig ist."""
+        region = self.tree.identify_region(event.x, event.y)
+        if region != "cell":
+            return
+        column = self.tree.identify_column(event.x)
+        row = self.tree.identify_row(event.y)
+        if column != "#1" or not row:
+            return
+        self.tree.selection_set(row)
+        self._toggle_done_for(int(row))
+        # Verhindert, dass ttk die Zeilenauswahl anschließend nochmal ändert
+        return "break"
+
+    def _toggle_all(self) -> None:
+        """Klick auf die Checkbox im Spaltenkopf: markiert alle sichtbaren
+        Aufgaben als erledigt bzw. hebt die Markierung komplett auf."""
+        todos = self._current_todos()
+        if not todos:
+            return
+        all_done = all(t.done for t in todos)
+        for t in todos:
+            if all_done:
+                self.store.reopen(t.id)
+            else:
+                self.store.complete(t.id)
+        self._refresh()
 
     # ------------------------------------------------------------------
     # Aktionen: hinzufügen / erledigt / offen
@@ -504,6 +533,9 @@ class TodoGUI(tk.Tk):
         todo_id = self._require_selection()
         if todo_id is None:
             return
+        self._toggle_done_for(todo_id)
+
+    def _toggle_done_for(self, todo_id: int) -> None:
         todo = self.store._find(todo_id)  # noqa: SLF001
         if todo is None:
             return

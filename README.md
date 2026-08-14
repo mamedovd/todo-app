@@ -19,8 +19,10 @@ python todo_gui.py
 Modernes Sidebar-Layout mit drei Ansichten:
 
 - **Aktive Aufgaben**: Aufgabe über das Eingabefeld hinzufügen (Enter oder Button),
-  per Doppelklick oder Button als erledigt/offen markieren, archivieren oder in den
-  Papierkorb verschieben. Checkbox „Nur offene Aufgaben anzeigen“ zum Filtern.
+  per Einzelklick auf das Kästchen in der Liste (oder über den Button) als erledigt/offen
+  markieren, archivieren oder in den Papierkorb verschieben. Über die Checkbox in der
+  Spaltenüberschrift lassen sich alle sichtbaren Aufgaben auf einmal markieren/entmarkieren.
+  Checkbox „Nur offene Aufgaben anzeigen“ zum Filtern.
 - **Archiv**: zur Seite gelegte Aufgaben. Können wiederhergestellt (zurück zu Aktiv),
   in den Papierkorb verschoben oder über „Archiv leeren“ komplett endgültig gelöscht werden.
 - **Papierkorb**: gelöschte Aufgaben. Können wiederhergestellt, einzeln endgültig
