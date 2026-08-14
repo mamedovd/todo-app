@@ -1,13 +1,29 @@
 # ToDo App
 
-Eine einfache Kommandozeilen-ToDo-App in Python ohne externe Abhängigkeiten.
+Eine einfache ToDo-App in Python ohne externe Abhängigkeiten – wahlweise über die
+Kommandozeile (`todo.py`) oder mit grafischer Oberfläche (`todo_gui.py`, Tkinter).
 Die Aufgaben werden persistent als JSON-Datei gespeichert (Standard: `~/.todo_app/todos.json`).
+Beide Varianten teilen sich dieselbe Datenbasis (`TodoStore` aus `todo.py`).
 
 ## Voraussetzungen
 
 - Python 3.10+
+- Für die GUI: Tkinter (bei den meisten Python-Installationen bereits enthalten)
 
-## Verwendung
+## Grafische Oberfläche (GUI)
+
+```bash
+python todo_gui.py
+```
+
+Funktionen im Fenster:
+- Neue Aufgabe über das Eingabefeld hinzufügen (Enter oder Button „Hinzufügen“)
+- Aufgabe auswählen und per Doppelklick oder Button „Erledigt“ als erledigt markieren/zurücksetzen
+- Ausgewählte Aufgabe löschen
+- Alle erledigten Aufgaben auf einmal entfernen
+- Checkbox „Nur offene anzeigen“ zum Filtern der Liste
+
+## Kommandozeile (CLI)
 
 ```bash
 # Aufgabe hinzufügen
